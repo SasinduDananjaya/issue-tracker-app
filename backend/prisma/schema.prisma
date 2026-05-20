@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,15 +7,18 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  uuid          String         @unique @default(uuid())
-  email         String         @unique
-  name          String
-  password      String
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  deletedAt     DateTime?
-  refreshTokens RefreshToken[]
+  id             Int            @id @default(autoincrement())
+  uuid           String         @unique @default(uuid())
+  email          String         @unique
+  name           String
+  password       String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  deletedAt      DateTime?
+  refreshTokens  RefreshToken[]
+  createdIssues  Issue[]        @relation("IssueCreatedBy")
+  assignedIssues Issue[]        @relation("IssueAssignee")
+  auditLogs      AuditLog[]     @relation("AuditPerformedBy")
 }
 
 model RefreshToken {
@@ -30,4 +28,55 @@ model RefreshToken {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
   createdAt DateTime @default(now())
+}
+
+model Issue {
+  id          Int       @id @default(autoincrement())
+  uuid        String    @unique @default(uuid())
+  title       String
+  description String?
+  status      String    @default("OPEN")
+  priority    String    @default("MEDIUM")
+  severity    String    @default("MEDIUM")
+  dueDate     DateTime?
+  resolvedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  createdById Int
+  createdBy   User  @relation("IssueCreatedBy", fields: [createdById], references: [id])
+  assigneeId  Int?
+  assignee    User? @relation("IssueAssignee", fields: [assigneeId], references: [id])
+
+  auditLogs AuditLog[]
+
+  //indexing for soft deletion and sorting by creation date
+  @@index([deletedAt, createdAt])
+  @@index([status])
+  @@index([priority])
+  @@index([severity])
+  @@index([createdById])
+  @@index([assigneeId])
+}
+
+model AuditLog {
+  id            Int      @id @default(autoincrement())
+  uuid          String   @unique @default(uuid())
+  entity        String
+  entityId      Int
+  entityUuid    String
+  action        String
+  field         String?
+  oldValue      String?
+  newValue      String?
+  performedById Int
+  performedBy   User     @relation("AuditPerformedBy", fields: [performedById], references: [id])
+  performedAt   DateTime @default(now())
+
+  issue Issue @relation(fields: [entityId], references: [id])
+
+  //index for fetching all audit logs for a specific entity
+  @@index([entity, entityId])
+  @@index([performedById])
 }

@@ -4,6 +4,7 @@ import helmet from "helmet";
 import cors from "cors";
 import { connectDB } from "./src/config/dbConfig.js";
 import authRoutes from "./src/routes/authRoutes.js";
+import issueRoutes from "./src/routes/issueRoutes.js";
 import errorHandler from "./src/middleware/errorHandler.js";
 
 const app = express();
@@ -36,6 +37,7 @@ app.get("/", (req, res) => {
 
 //routes
 app.use("/api/auth", authRoutes);
+app.use("/api/issues", issueRoutes);
 
 //global error handler
 app.use(errorHandler);

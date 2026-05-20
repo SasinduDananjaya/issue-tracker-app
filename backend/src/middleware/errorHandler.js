@@ -16,9 +16,10 @@ const errorHandler = (err, req, res, next) => {
 
   //prisma unique constraint violation
   if (err.code === "P2002") {
+    const field = err.meta?.target?.[0] ?? "field";
     return res.status(409).json({
       success: false,
-      message: "This email already exists",
+      message: `A record with this ${field} already exists`,
     });
   }
 
