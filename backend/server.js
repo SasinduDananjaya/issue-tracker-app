@@ -3,6 +3,8 @@ import "dotenv/config";
 import helmet from "helmet";
 import cors from "cors";
 import { connectDB } from "./src/config/dbConfig.js";
+import authRoutes from "./src/routes/authRoutes.js";
+import errorHandler from "./src/middleware/errorHandler.js";
 
 const app = express();
 
@@ -14,7 +16,7 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
 
@@ -32,10 +34,16 @@ app.get("/", (req, res) => {
   });
 });
 
+//routes
+app.use("/api/auth", authRoutes);
+
+//global error handler
+app.use(errorHandler);
+
 const PORT = process.env.PORT || 3001;
 
 //start server
 app.listen(PORT, async () => {
-  console.log(`Server is running on port ${PORT}`);
   await connectDB();
+  console.log(`Server is running on port ${PORT}`);
 });
