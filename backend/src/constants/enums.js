@@ -1,5 +1,6 @@
 //enum values for issue status, priority, severity and audit actions
 
+//freeze to prevent modification at runtime and ensure immutability
 export const IssueStatus = Object.freeze({
   OPEN: "OPEN",
   IN_PROGRESS: "IN_PROGRESS",
