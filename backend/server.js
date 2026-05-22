@@ -2,24 +2,33 @@ import express from "express";
 import "dotenv/config";
 import helmet from "helmet";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import { connectDB } from "./src/config/dbConfig.js";
 import authRoutes from "./src/routes/authRoutes.js";
 import issueRoutes from "./src/routes/issueRoutes.js";
 import errorHandler from "./src/middleware/errorHandler.js";
+import requestLogger from "./src/middleware/requestLogger.js";
 
 const app = express();
 
 //middleware that sets security headers
 app.use(helmet());
 
+//log the incoming req
+app.use(requestLogger);
+
 //cors configs
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
+    credentials: true, //browser to send httpOnly cookies cross-origin
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
+
+//parse httpOnly refresh token cookie
+app.use(cookieParser());
 
 //parse json request bodies and limit size
 app.use(express.json({ limit: "10mb" }));
