@@ -12,9 +12,6 @@ export const LoginDTO = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-export const RefreshDTO = z.object({
-  refreshToken: z.string().min(1, "Refresh token is required"),
-});
 
 export const validate =
   (schema, source = "body") =>
@@ -24,7 +21,7 @@ export const validate =
       return next(result.error);
     }
     if (source === "query") {
-      req.query = result.data;
+      Object.defineProperty(req, "query", { value: result.data, writable: true, configurable: true });
     } else {
       req.body = result.data;
     }
