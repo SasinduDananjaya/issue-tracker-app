@@ -43,7 +43,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => (
       <p className="text-primary-100 text-xs relative z-10">© {new Date().getFullYear()} Issuly</p>
     </div>
 
-    {/* right panel — auth form */}
+    {/* right panel - auth form */}
     <div className="flex-1 flex items-center justify-center bg-gray-50 p-8">
       <div className="w-full max-w-md">
         {/* mobile logo */}

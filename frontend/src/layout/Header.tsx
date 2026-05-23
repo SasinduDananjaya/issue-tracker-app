@@ -50,7 +50,9 @@ const Header = () => {
       <header className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0">
         {/* left side - logo and nav */}
         <div className="flex items-center gap-6">
-          <img src="/issuly_logo.webp" alt="Issuly" className="h-8 w-auto" />
+          <NavLink to="/issues">
+            <img src="/issuly_logo.webp" alt="Issuly" className="h-8 w-auto" />
+          </NavLink>
 
           <nav className="flex items-center gap-1">
             {NAV_ITEMS.map(({ to, icon: Icon, label }) => (

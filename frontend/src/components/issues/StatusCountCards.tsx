@@ -47,7 +47,7 @@ const StatusCountCards = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">{STATUS_LABELS[status]}</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{isLoading ? "—" : count}</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">{isLoading ? "-" : count}</p>
                 </div>
                 <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center", STATUS_COUNT_ICON_COLORS[status])}>
                   <Icon className="w-5 h-5" />

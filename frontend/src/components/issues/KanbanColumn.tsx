@@ -58,7 +58,7 @@ const KanbanColumn = ({ index, status, filters, onEdit, onView, isDimmed = false
         </div>
 
         {/* scrollable cards */}
-        <div className="flex-1 overflow-y-auto p-2 space-y-2 max-h-[calc(100vh-240px)]">
+        <div className="flex-1 overflow-y-auto p-2 space-y-2 max-h-[calc(100vh-240px)] scrollbar-thin">
           {isLoading ? (
             <div className="flex justify-center py-8">
               <Loader2 className="w-5 h-5 animate-spin text-gray-400" />

@@ -108,7 +108,7 @@ const KanbanBoard = ({ filters, onEdit, onView }: KanbanBoardProps) => {
       if (prevSource) queryClient.setQueryData(sourceKey, prevSource);
       if (prevTarget) queryClient.setQueryData(targetKey, prevTarget);
       if (prevStats) queryClient.setQueryData(statsKey, prevStats);
-      toast.error("Failed to move issue — change has been reverted");
+      toast.error("Failed to move issue - change has been reverted");
     }
   };
 

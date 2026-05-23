@@ -25,8 +25,8 @@ const LoginPage = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<LoginFormValues>();
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<LoginFormValues>({ mode: "onChange" });
 
   const onSubmit = async ({ email, password }: LoginFormValues) => {
     try {
@@ -56,6 +56,8 @@ const LoginPage = () => {
               {...register("email", {
                 required: "Email is required",
                 pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Enter a valid email" },
+                maxLength: { value: 254, message: "Email is too long" },
+                setValueAs: (v) => v.trim().toLowerCase(),
               })}
               aria-invalid={!!errors.email}
             />
@@ -72,7 +74,12 @@ const LoginPage = () => {
                 placeholder="••••••••"
                 autoComplete="current-password"
                 className="pr-10"
-                {...register("password", { required: "Password is required", minLength: { value: 6, message: "Minimum 6 characters" } })}
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: { value: 8, message: "Minimum 8 characters" },
+                  maxLength: { value: 128, message: "Password is too long" },
+                  validate: (v) => !/\s/.test(v) || "Password cannot contain spaces",
+                })}
                 aria-invalid={!!errors.password}
               />
               <button
@@ -87,7 +94,7 @@ const LoginPage = () => {
           </div>
 
           {/* sign in btn */}
-          <Button type="submit" className="w-full bg-primary hover:bg-primary-700 text-white" disabled={isSubmitting}>
+          <Button type="submit" className="w-full bg-primary hover:bg-primary-700 text-white" disabled={isSubmitting || !isValid}>
             {isSubmitting && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
             Sign in
           </Button>

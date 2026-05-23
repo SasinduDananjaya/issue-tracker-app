@@ -29,7 +29,7 @@ export const deleteIssue = async (uuid: string): Promise<void> => {
 
 export const getIssueStats = async (): Promise<IssueStats> => {
   const { data } = await apiClient.get("/issues/stats");
-  return data;
+  return data.stats;
 };
 
 export const getAuditLogs = async (uuid: string): Promise<AuditLog[]> => {

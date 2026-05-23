@@ -16,7 +16,7 @@ import { createIssue, updateIssue } from "@/api/issueApi";
 import { getOrgMembers } from "@/api/userApi";
 import { useAuthStore } from "@/store/authStore";
 import { ALL_STATUSES, ALL_PRIORITIES, ALL_SEVERITIES, STATUS_LABELS, PRIORITY_LABELS, SEVERITY_LABELS } from "@/lib/constants";
-import type { CreateIssuePayload } from "@/types";
+import type { CreateIssuePayload, IssueStats } from "@/types";
 import type { Issue } from "@/types/issueTypes";
 
 const UNASSIGNED = "__none__";
@@ -57,8 +57,9 @@ const IssueForm = ({ open, onOpenChange, editIssue }: IssueFormProps) => {
     control,
     reset,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid, isDirty },
   } = useForm<IssueFormValues>({
+    mode: "onChange",
     defaultValues: {
       title: "",
       description: "",
@@ -112,8 +113,16 @@ const IssueForm = ({ open, onOpenChange, editIssue }: IssueFormProps) => {
         });
         toast.success("Issue updated");
       } else {
-        await createIssue(createPayload);
+        const created = await createIssue(createPayload);
         toast.success("Issue created");
+        const statsKey = ["issues", "stats"];
+        const prevStats = queryClient.getQueryData<IssueStats>(statsKey);
+        if (prevStats) {
+          queryClient.setQueryData<IssueStats>(statsKey, {
+            ...prevStats,
+            [created.status]: prevStats[created.status] + 1,
+          });
+        }
       }
       queryClient.invalidateQueries({ queryKey: ["issues"] });
       onOpenChange(false);
@@ -193,7 +202,7 @@ const IssueForm = ({ open, onOpenChange, editIssue }: IssueFormProps) => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {ALL_STATUSES.map((s) => (
+                        {ALL_STATUSES.filter((s) => isEdit || (s !== "RESOLVED" && s !== "CLOSED")).map((s) => (
                           <SelectItem key={s} value={s}>
                             {STATUS_LABELS[s]}
                           </SelectItem>
@@ -227,7 +236,7 @@ const IssueForm = ({ open, onOpenChange, editIssue }: IssueFormProps) => {
               </div>
             </div>
 
-            {/* Assignee — org owner only */}
+            {/* Assignee - org owner only */}
             {isOrgOwner && (
               <div className="space-y-1.5">
                 <Label className="flex items-center gap-1.5">
@@ -316,7 +325,7 @@ const IssueForm = ({ open, onOpenChange, editIssue }: IssueFormProps) => {
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button type="submit" className="bg-primary hover:bg-primary-700 text-white" disabled={isSubmitting}>
+            <Button type="submit" className="bg-primary hover:bg-primary-700 text-white" disabled={isSubmitting || !isValid || (isEdit && !isDirty)}>
               {isSubmitting && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
               {isEdit ? "Save changes" : "Create issue"}
             </Button>
