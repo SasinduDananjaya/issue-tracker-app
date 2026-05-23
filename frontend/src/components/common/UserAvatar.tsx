@@ -25,7 +25,7 @@ const getInitials = (name: string) =>
 //user avatar that displays users initials with different sizes
 const UserAvatar = ({ user, className, size = "md" }: UserAvatarProps) => (
   <Avatar className={cn(SIZE_CLASSES[size], className)}>
-    <AvatarFallback className="bg-purple-100 text-purple-700 font-medium">{getInitials(user.name)}</AvatarFallback>
+    <AvatarFallback className="bg-primary-100 text-primary-900 font-medium">{getInitials(user.name)}</AvatarFallback>
   </Avatar>
 );
 

@@ -3,36 +3,36 @@ import type { IssueStatus, IssuePriority, IssueSeverity, AuditLog } from "@/type
 //constants for issue status, priority, severity colors and labels, column order and audit log labels
 export const STATUS_COLORS: Record<IssueStatus, string> = {
   OPEN: "bg-blue-100 text-blue-700 border-blue-200",
-  IN_PROGRESS: "bg-purple-100 text-purple-700 border-purple-200",
-  RESOLVED: "bg-green-100 text-green-700 border-green-200",
+  IN_PROGRESS: "bg-primary-100 text-primary-900 border-primary-200",
+  RESOLVED: "bg-success-50 text-success-700 border-success-700/30",
   CLOSED: "bg-gray-100 text-gray-600 border-gray-200",
 };
 
 export const STATUS_DOT_COLORS: Record<IssueStatus, string> = {
   OPEN: "bg-blue-500",
-  IN_PROGRESS: "bg-purple-500",
-  RESOLVED: "bg-green-500",
-  CLOSED: "bg-gray-400",
+  IN_PROGRESS: "bg-primary",
+  RESOLVED: "bg-success",
+  CLOSED: "bg-red-400",
 };
 
 export const STATUS_BORDER_COLORS: Record<IssueStatus, string> = {
   OPEN: "border-l-blue-500",
-  IN_PROGRESS: "border-l-purple-500",
-  RESOLVED: "border-l-green-500",
+  IN_PROGRESS: "border-l-primary",
+  RESOLVED: "border-l-success",
   CLOSED: "border-l-gray-400",
 };
 
 export const STATUS_CARD_COLORS: Record<IssueStatus, string> = {
   OPEN: "bg-blue-50 border-blue-200",
-  IN_PROGRESS: "bg-purple-50 border-purple-200",
-  RESOLVED: "bg-green-50 border-green-200",
+  IN_PROGRESS: "bg-primary-50 border-primary-200",
+  RESOLVED: "bg-success-50 border-success-700/20",
   CLOSED: "bg-gray-50 border-gray-200",
 };
 
 export const STATUS_COUNT_ICON_COLORS: Record<IssueStatus, string> = {
   OPEN: "text-blue-600 bg-blue-100",
-  IN_PROGRESS: "text-purple-600 bg-purple-100",
-  RESOLVED: "text-green-600 bg-green-100",
+  IN_PROGRESS: "text-primary-900 bg-primary-100",
+  RESOLVED: "text-success-700 bg-success-50",
   CLOSED: "text-gray-500 bg-gray-100",
 };
 
