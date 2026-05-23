@@ -43,6 +43,7 @@ export const ListIssuesDTO = z.object({
   severity: z.enum(severityValues).optional(),
   createdBy: z.string().uuid().optional(),
   assignee: z.string().uuid().optional(),
+  updatedBy: z.string().uuid().optional(),
   dueDateFrom: dateField.optional(),
   dueDateTo: dateField.optional(),
 });

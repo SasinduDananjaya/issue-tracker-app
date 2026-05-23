@@ -6,7 +6,7 @@ import { IssueStatus, RESOLVED_STATUSES } from "../constants/enums.js";
 import AppError from "../utils/error.js";
 
 //remove internal fields and relations from issue object before sending to FE
-const sanitizeIssue = ({ id, createdById, assigneeId, ...rest }) => rest;
+const sanitizeIssue = ({ id, createdById, assigneeId, updatedById, ...rest }) => rest;
 
 //resolve assigneeUuid to internal User.id, scoped to the same organization
 const resolveAssigneeId = async (assigneeUuid, organizationCode) => {
@@ -66,8 +66,12 @@ const issueService = {
     //resolve assignee only when the key was explicitly provided in the payload
     if ("assigneeUuid" in body) {
       const resolvedId = await resolveAssigneeId(assigneeUuid, organizationCode);
-      if (resolvedId !== undefined) updateData.assigneeId = resolvedId;
+      if (resolvedId !== undefined) {
+        updateData.assignee = resolvedId === null ? { disconnect: true } : { connect: { id: resolvedId } };
+      }
     }
+
+    updateData.updatedBy = { connect: { id: performedById } };
 
     //auto manage resolvedAt on status transitions
     if (rest.status) {

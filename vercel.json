@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "buildCommand": "cd backend && npm install && npm run build",
+  "builds": [
+    {
+      "src": "backend/server.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["backend/prisma/**"]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "backend/server.js"
+    }
+  ]
+}
