@@ -15,8 +15,8 @@ interface ConfirmDialogProps {
 
 const VARIANT_BUTTON: Record<string, string> = {
   destructive: "bg-red-600 hover:bg-red-700 text-white",
-  warning: "bg-amber-500 hover:bg-amber-600 text-white",
-  default: "bg-purple-600 hover:bg-purple-700 text-white",
+  warning: "bg-red-500 hover:bg-red-600 text-white",
+  default: "bg-primary hover:bg-primary-700 text-white",
 };
 
 //reusable confirmation dialog with customizable title, description and confirm button variant

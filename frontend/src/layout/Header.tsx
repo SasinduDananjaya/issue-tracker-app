@@ -45,7 +45,7 @@ const Header = () => {
               className={({ isActive }) =>
                 cn(
                   "flex items-center gap-2 px-3 h-8 rounded-md text-sm transition-colors",
-                  isActive ? "bg-purple-50 text-purple-700 font-medium" : "text-gray-500 hover:text-gray-900 hover:bg-gray-100",
+                  isActive ? "bg-primary-50 text-primary-900 font-medium" : "text-gray-500 hover:text-gray-900 hover:bg-gray-100",
                 )
               }
             >
@@ -56,12 +56,12 @@ const Header = () => {
         </nav>
       </div>
 
-      {/* Right side - user */}
+      {/* right side - user */}
       <div className="flex items-center gap-3">
         {user && (
           <DropdownMenu>
             <DropdownMenuTrigger className="focus:outline-none">
-              <UserAvatar user={user} className="cursor-pointer hover:ring-2 hover:ring-purple-300 transition-all" />
+              <UserAvatar user={user} className="cursor-pointer hover:ring-2 hover:ring-primary-200 transition-all" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuLabel className="font-normal">
