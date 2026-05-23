@@ -11,30 +11,33 @@ const issueRepository = {
     });
   },
 
-  async findByUuid(uuid) {
+  async findByUuid(uuid, organizationCode) {
     return prisma.issue.findFirst({
-      where: { uuid, deletedAt: null },
+      where: { uuid, deletedAt: null, createdBy: { is: { organizationCode } } },
       include: { createdBy: USER_SELECT, assignee: USER_SELECT },
     });
   },
 
-  async findById(id) {
+  async findById(id, organizationCode) {
     return prisma.issue.findFirst({
-      where: { id, deletedAt: null },
+      where: { id, deletedAt: null, createdBy: { is: { organizationCode } } },
       include: { createdBy: USER_SELECT, assignee: USER_SELECT },
     });
   },
 
-  async list({ page = 1, limit = 20, search, status, priority, severity, createdBy, assignee, dueDateFrom, dueDateTo } = {}) {
-    const where = { deletedAt: null };
+  async list({ page = 1, limit = 20, search, status, priority, severity, createdBy, assignee, dueDateFrom, dueDateTo } = {}, organizationCode) {
+    const where = {
+      deletedAt: null,
+      createdBy: { is: { organizationCode } },
+    };
 
     if (search) where.title = { contains: search, mode: "insensitive" };
     if (status) where.status = status;
     if (priority) where.priority = priority;
     if (severity) where.severity = severity;
 
-    //uuid-based user filters via nested relation — avoids a separate lookup round-trip
-    if (createdBy) where.createdBy = { is: { uuid: createdBy } };
+    //uuid-based user filters to ensure users can only filter by users within their organization
+    if (createdBy) where.createdBy = { is: { organizationCode, uuid: createdBy } };
     if (assignee) where.assignee = { is: { uuid: assignee } };
 
     if (dueDateFrom || dueDateTo) {
@@ -75,10 +78,10 @@ const issueRepository = {
     });
   },
 
-  async countByStatus() {
+  async countByStatus(organizationCode) {
     return prisma.issue.groupBy({
       by: ["status"],
-      where: { deletedAt: null },
+      where: { deletedAt: null, createdBy: { is: { organizationCode } } },
       _count: { _all: true },
     });
   },

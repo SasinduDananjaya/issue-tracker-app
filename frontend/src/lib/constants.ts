@@ -33,7 +33,7 @@ export const STATUS_COUNT_ICON_COLORS: Record<IssueStatus, string> = {
   OPEN: "text-blue-600 bg-blue-100",
   IN_PROGRESS: "text-primary-900 bg-primary-100",
   RESOLVED: "text-success-700 bg-success-50",
-  CLOSED: "text-gray-500 bg-gray-100",
+  CLOSED: "text-red-500 bg-red-100",
 };
 
 export const PRIORITY_COLORS: Record<IssuePriority, string> = {

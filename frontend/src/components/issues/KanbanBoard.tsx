@@ -114,7 +114,7 @@ const KanbanBoard = ({ filters, onEdit, onView }: KanbanBoardProps) => {
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className="flex gap-4 overflow-x-auto pb-4 h-full">
+      <div className="flex gap-5 overflow-x-auto pb-4 h-full">
         {COLUMN_ORDER.map((status, index) => (
           <KanbanColumn
             key={status}

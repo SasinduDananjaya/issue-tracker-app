@@ -3,6 +3,7 @@ import { useAuthStore } from "@/store/authStore";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
 import IssuesPage from "@/pages/IssuesPage";
+import ActivityPage from "@/pages/ActivityPage";
 import AppLayout from "@/layout/AppLayout";
 
 //protected routes for authenticated users and public routes for unauthenticated users
@@ -31,7 +32,10 @@ export const router = createBrowserRouter([
     children: [
       {
         element: <AppLayout />,
-        children: [{ path: "/issues", element: <IssuesPage /> }],
+        children: [
+          { path: "/issues", element: <IssuesPage /> },
+          { path: "/activity", element: <ActivityPage /> },
+        ],
       },
     ],
   },

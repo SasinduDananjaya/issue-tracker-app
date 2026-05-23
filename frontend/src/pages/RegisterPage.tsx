@@ -16,6 +16,7 @@ interface RegisterFormValues {
   email: string;
   password: string;
   confirmPassword: string;
+  companyCode?: string;
 }
 
 //register page with form to enter name, email, password and confirm password
@@ -31,11 +32,21 @@ const RegisterPage = () => {
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>();
 
-  const onSubmit = async ({ name, email, password }: RegisterFormValues) => {
+  const onSubmit = async ({ name, email, password, companyCode }: RegisterFormValues) => {
     try {
-      const { user, accessToken } = await registerUser(name, email, password);
+      const { user, accessToken } = await registerUser(name, email, password, companyCode || undefined);
       setAuth(user, accessToken);
       navigate("/issues");
+
+      if (!companyCode) {
+        toast.success("Account created!", {
+          description: `Your company code is ${user.organizationCode} — share it with teammates so they can join.`,
+          duration: Infinity,
+          action: { label: "Copy", onClick: () => navigator.clipboard.writeText(user.organizationCode) },
+        });
+      } else {
+        toast.success("Joined team successfully!");
+      }
     } catch (err: unknown) {
       const message = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Registration failed. Please try again.";
       toast.error(message);
@@ -77,6 +88,20 @@ const RegisterPage = () => {
               aria-invalid={!!errors.email}
             />
             {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
+          </div>
+
+          {/* company code field */}
+          <div className="space-y-1.5">
+            <Label htmlFor="companyCode">
+              Company code <span className="text-gray-400 font-normal">(optional)</span>
+            </Label>
+            <Input
+              id="companyCode"
+              type="text"
+              placeholder="Enter your team's code, or leave blank to create a new one"
+              autoComplete="off"
+              {...register("companyCode")}
+            />
           </div>
 
           {/* password field */}

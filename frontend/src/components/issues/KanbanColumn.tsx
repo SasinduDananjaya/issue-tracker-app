@@ -44,7 +44,7 @@ const KanbanColumn = ({ index, status, filters, onEdit, onView, isDimmed = false
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08, duration: 0.3 }}
-      className={cn("min-w-70 max-w-[320px] w-full transition-opacity duration-200", isDimmed && "opacity-35 grayscale pointer-events-none")}
+      className={cn("flex-1 min-w-64 transition-opacity duration-200", isDimmed && "opacity-35 grayscale pointer-events-none")}
     >
       <div
         ref={setNodeRef}

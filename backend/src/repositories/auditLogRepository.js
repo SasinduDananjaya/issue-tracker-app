@@ -20,6 +20,27 @@ const auditLogRepository = {
       orderBy: { performedAt: "desc" },
     });
   },
+
+  async findAll(organizationCode, { page = 1, limit = 20 } = {}) {
+    const skip = (page - 1) * limit;
+    const where = { issue: { createdBy: { is: { organizationCode } } } };
+
+    const [logs, total] = await prisma.$transaction([
+      prisma.auditLog.findMany({
+        where,
+        include: {
+          performedBy: { select: { uuid: true, name: true, email: true } },
+          issue: { select: { uuid: true, title: true } },
+        },
+        orderBy: { performedAt: "desc" },
+        skip,
+        take: limit,
+      }),
+      prisma.auditLog.count({ where }),
+    ]);
+
+    return { logs, total, page, limit, totalPages: Math.ceil(total / limit) };
+  },
 };
 
 export default auditLogRepository;

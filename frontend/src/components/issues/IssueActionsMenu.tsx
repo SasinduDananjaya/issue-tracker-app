@@ -67,7 +67,7 @@ const IssueActionsMenu = ({ issue, onEdit }: IssueActionsMenuProps) => {
               onEdit(issue);
             }}
           >
-            <Pencil className="w-3.5 h-3.5 mr-2" /> Edit
+            <Pencil className="w-3.5 h-3.5 mr-2 text-primary" /> Edit
           </DropdownMenuItem>
           {issue.status !== "RESOLVED" && (
             <DropdownMenuItem
@@ -86,7 +86,7 @@ const IssueActionsMenu = ({ issue, onEdit }: IssueActionsMenuProps) => {
                 setCloseOpen(true);
               }}
             >
-              <XCircle className="w-3.5 h-3.5 mr-2 text-gray-500" /> Mark Closed
+              <XCircle className="w-3.5 h-3.5 mr-2 text-red-500" /> Mark Closed
             </DropdownMenuItem>
           )}
           <DropdownMenuSeparator />
