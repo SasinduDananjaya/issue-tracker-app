@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { format, isPast } from "date-fns";
-import { Loader2, ChevronLeft, ChevronRight, InboxIcon, Calendar } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Loader2, InboxIcon, Calendar } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import Pagination from "@/components/common/Pagination";
 import StatusBadge from "@/components/common/StatusBadge";
 import PriorityBadge from "@/components/common/PriorityBadge";
 import SeverityBadge from "@/components/common/SeverityBadge";
@@ -26,14 +26,6 @@ const IssueList = ({ filters, onEdit, onView }: IssueListProps) => {
 
   const issues = data?.issues ?? [];
   const totalPages = data?.totalPages ?? 1;
-
-  const pageNumbers = () => {
-    const start = Math.max(1, page - 2);
-    const end = Math.min(totalPages, start + 4);
-    const pages: number[] = [];
-    for (let i = start; i <= end; i++) pages.push(i);
-    return pages;
-  };
 
   return (
     <div className="flex flex-col gap-4 h-full overflow-auto">
@@ -131,32 +123,17 @@ const IssueList = ({ filters, onEdit, onView }: IssueListProps) => {
         )}
       </div>
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between flex-wrap gap-2 pb-4">
-          <p className="text-sm text-gray-500">{data && `${(page - 1) * 20 + 1}–${Math.min(page * 20, data.total)} of ${data.total} issues`}</p>
-          <div className="flex items-center gap-1">
-            <Button variant="outline" size="icon-sm" onClick={() => setPage((p) => p - 1)} disabled={page === 1 || isFetching}>
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            {pageNumbers().map((n) => (
-              <Button
-                key={n}
-                variant={n === page ? "default" : "outline"}
-                size="icon-sm"
-                className={n === page ? "bg-primary hover:bg-primary-700 text-white" : ""}
-                onClick={() => setPage(n)}
-                disabled={isFetching}
-              >
-                {n}
-              </Button>
-            ))}
-            <Button variant="outline" size="icon-sm" onClick={() => setPage((p) => p + 1)} disabled={page === totalPages || isFetching}>
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-      )}
+      <div className="pb-4">
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          total={data?.total}
+          pageSize={20}
+          itemLabel="issues"
+          isLoading={isFetching}
+          onChange={setPage}
+        />
+      </div>
     </div>
   );
 };

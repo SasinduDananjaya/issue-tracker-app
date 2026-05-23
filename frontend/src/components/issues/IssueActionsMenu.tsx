@@ -3,6 +3,7 @@ import { MoreHorizontal, Pencil, Trash2, CheckCircle2, XCircle } from "lucide-re
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import { deleteIssue, updateIssue } from "@/api/issueApi";
@@ -55,17 +56,25 @@ const IssueActionsMenu = ({ issue, onEdit }: IssueActionsMenuProps) => {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-          <Button variant="ghost" size="icon-xs" className="text-gray-400 hover:text-gray-700">
-            <MoreHorizontal className="w-4 h-4" />
-          </Button>
-        </DropdownMenuTrigger>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+              <Button variant="ghost" size="icon-xs" className="text-gray-400 hover:text-gray-700">
+                <MoreHorizontal className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="bg-primary text-white" arrowClassName="bg-primary fill-primary">
+            Actions
+          </TooltipContent>
+        </Tooltip>
         <DropdownMenuContent align="end" className="w-44">
           <DropdownMenuItem
             onClick={(e) => {
               e.stopPropagation();
               onEdit(issue);
             }}
+            className="hover:bg-primary-50"
           >
             <Pencil className="w-3.5 h-3.5 mr-2 text-primary" /> Edit
           </DropdownMenuItem>
@@ -75,6 +84,7 @@ const IssueActionsMenu = ({ issue, onEdit }: IssueActionsMenuProps) => {
                 e.stopPropagation();
                 setResolveOpen(true);
               }}
+              className="hover:bg-primary-50"
             >
               <CheckCircle2 className="w-3.5 h-3.5 mr-2 text-green-600" /> Mark Resolved
             </DropdownMenuItem>
@@ -85,13 +95,14 @@ const IssueActionsMenu = ({ issue, onEdit }: IssueActionsMenuProps) => {
                 e.stopPropagation();
                 setCloseOpen(true);
               }}
+              className="hover:bg-primary-50"
             >
               <XCircle className="w-3.5 h-3.5 mr-2 text-red-500" /> Mark Closed
             </DropdownMenuItem>
           )}
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            className="text-red-600 focus:text-red-600"
+            className="text-red-600 focus:text-red-600 hover:bg-primary-50"
             onClick={(e) => {
               e.stopPropagation();
               setDeleteOpen(true);
