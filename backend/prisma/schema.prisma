@@ -7,19 +7,23 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  uuid      String    @unique @default(uuid())
-  email     String    @unique
-  name      String
-  password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  id               Int       @id @default(autoincrement())
+  uuid             String    @unique @default(uuid())
+  email            String    @unique
+  name             String
+  password         String
+  organizationCode String
+  isOrgOwner       Boolean  @default(false)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
 
   refreshTokens  RefreshToken[]
   createdIssues  Issue[]        @relation("IssueCreatedBy")
   assignedIssues Issue[]        @relation("IssueAssignee")
   auditLogs      AuditLog[]     @relation("AuditPerformedBy")
+
+  @@index([organizationCode])
 }
 
 model RefreshToken {

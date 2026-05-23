@@ -13,6 +13,18 @@ export interface AuditLog {
   performedAt: string;
 }
 
+export interface GlobalAuditLog extends AuditLog {
+  issue: { uuid: string; title: string };
+}
+
+export interface PaginatedActivity {
+  logs: GlobalAuditLog[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
 export interface AuthTokens {
   accessToken: string;
   user: User;
@@ -28,7 +40,9 @@ export interface CreateIssuePayload {
   assigneeUuid?: string;
 }
 
-export type UpdateIssuePayload = Partial<CreateIssuePayload>;
+export interface UpdateIssuePayload extends Omit<Partial<CreateIssuePayload>, "assigneeUuid"> {
+  assigneeUuid?: string | null;
+}
 
 export type { User } from "./userTypes";
 

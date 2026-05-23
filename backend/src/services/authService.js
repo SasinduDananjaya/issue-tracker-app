@@ -15,6 +15,8 @@ const sanitizeUser = (user) => ({
   uuid: user.uuid,
   name: user.name,
   email: user.email,
+  organizationCode: user.organizationCode,
+  isOrgOwner: user.isOrgOwner,
   createdAt: user.createdAt,
 });
 
@@ -38,6 +40,8 @@ const issueTokens = async (user) => {
     uuid: user.uuid,
     email: user.email,
     name: user.name,
+    organizationCode: user.organizationCode,
+    isOrgOwner: user.isOrgOwner,
   });
   const refreshToken = generateRefreshToken();
   await storeRefreshToken(user.id, refreshToken);
@@ -46,12 +50,23 @@ const issueTokens = async (user) => {
 
 //service to handle authentication logic for registration, login, token refresh and logout
 const authService = {
-  async register({ name, email, password }) {
+  async register({ name, email, password, companyCode }) {
     const existing = await userRepository.findByEmail(email);
     if (existing) throw new AppError("Email already registered", 409);
 
+    let organizationCode;
+    let isOrgOwner = false;
+    if (companyCode) {
+      const orgMember = await prisma.user.findFirst({ where: { organizationCode: companyCode } });
+      if (!orgMember) throw new AppError("Invalid code", 404);
+      organizationCode = companyCode;
+    } else {
+      organizationCode = crypto.randomUUID().replace(/-/g, "").slice(0, 8).toUpperCase();
+      isOrgOwner = true;
+    }
+
     const hashedPassword = await bcrypt.hash(password, BCRYPT_ROUNDS);
-    const user = await userRepository.createUser({ name, email, password: hashedPassword });
+    const user = await userRepository.createUser({ name, email, password: hashedPassword, organizationCode, isOrgOwner });
 
     const tokens = await issueTokens(user);
     return { ...tokens, user: sanitizeUser(user) };

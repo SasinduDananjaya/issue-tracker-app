@@ -8,8 +8,8 @@ export const login = async (email: string, password: string): Promise<AuthTokens
   return data;
 };
 
-export const register = async (name: string, email: string, password: string): Promise<AuthTokens> => {
-  const { data } = await apiClient.post("/auth/register", { name, email, password });
+export const register = async (name: string, email: string, password: string, companyCode?: string): Promise<AuthTokens> => {
+  const { data } = await apiClient.post("/auth/register", { name, email, password, ...(companyCode && { companyCode }) });
   return data;
 };
 

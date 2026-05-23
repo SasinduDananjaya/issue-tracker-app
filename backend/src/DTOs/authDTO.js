@@ -5,6 +5,7 @@ export const RegisterDTO = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address").trim().toLowerCase(),
   password: z.string().min(6, "Password must be at least 6 characters"),
+  companyCode: z.string().optional(),
 });
 
 export const LoginDTO = z.object({
