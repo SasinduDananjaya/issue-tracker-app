@@ -25,7 +25,7 @@ const issueRepository = {
     });
   },
 
-  async list({ page = 1, limit = 20, search, status, priority, severity, createdBy, assignee, dueDateFrom, dueDateTo } = {}, organizationCode) {
+  async list({ page = 1, limit = 20, search, status, priority, severity, createdBy, assignee, updatedBy, dueDateFrom, dueDateTo } = {}, organizationCode) {
     const where = {
       deletedAt: null,
       createdBy: { is: { organizationCode } },
@@ -39,6 +39,7 @@ const issueRepository = {
     //uuid-based user filters to ensure users can only filter by users within their organization
     if (createdBy) where.createdBy = { is: { organizationCode, uuid: createdBy } };
     if (assignee) where.assignee = { is: { uuid: assignee } };
+    if (updatedBy) where.updatedBy = { is: { uuid: updatedBy } };
 
     if (dueDateFrom || dueDateTo) {
       where.dueDate = {};

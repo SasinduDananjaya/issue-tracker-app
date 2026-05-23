@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { to: "/issues", icon: LayoutList, label: "Issues" },
-  { to: "/activity", icon: History, label: "Activity" },
+  { to: "/activity", icon: History, label: "Activity Logs" },
 ];
 
 const Header = () => {
@@ -117,10 +117,7 @@ const Header = () => {
               <p className="text-xs font-medium text-primary-700 mb-2 uppercase tracking-wide">Company Code</p>
               <div className="flex items-center justify-between gap-2">
                 <span className="font-mono text-lg font-bold text-primary-900 tracking-widest">{user.organizationCode}</span>
-                <button
-                  onClick={copyCode}
-                  className="flex items-center gap-1.5 text-xs text-primary hover:text-primary-700 transition-colors font-medium"
-                >
+                <button onClick={copyCode} className="flex items-center gap-1.5 text-xs text-primary hover:text-primary-700 transition-colors font-medium">
                   {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                   {copied ? "Copied!" : "Copy"}
                 </button>

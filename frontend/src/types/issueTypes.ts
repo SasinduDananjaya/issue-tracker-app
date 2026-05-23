@@ -33,6 +33,7 @@ export interface IssueFilters {
   severity?: IssueSeverity;
   createdBy?: string;
   assignee?: string;
+  updatedBy?: string;
   dueDateFrom?: string;
   dueDateTo?: string;
 }
