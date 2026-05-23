@@ -29,8 +29,8 @@ const RegisterPage = () => {
     register,
     handleSubmit,
     watch,
-    formState: { errors, isSubmitting },
-  } = useForm<RegisterFormValues>();
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<RegisterFormValues>({ mode: "onChange" });
 
   const onSubmit = async ({ name, email, password, companyCode }: RegisterFormValues) => {
     try {
@@ -40,9 +40,10 @@ const RegisterPage = () => {
 
       if (!companyCode) {
         toast.success("Account created!", {
-          description: `Your company code is ${user.organizationCode} — share it with teammates so they can join.`,
-          duration: Infinity,
+          description: `Your company code is ${user.organizationCode} - share it with teammates so they can join.`,
+          duration: 10000,
           action: { label: "Copy", onClick: () => navigator.clipboard.writeText(user.organizationCode) },
+          actionButtonStyle: { backgroundColor: "oklch(0.563 0.17 136.27)", color: "white" },
         });
       } else {
         toast.success("Joined team successfully!");
@@ -67,7 +68,11 @@ const RegisterPage = () => {
               type="text"
               placeholder="John Doe"
               autoComplete="name"
-              {...register("name", { required: "Name is required", minLength: { value: 1, message: "Name is required" } })}
+              {...register("name", {
+                required: "Name is required",
+                maxLength: { value: 100, message: "Name is too long" },
+                setValueAs: (v) => v.trim(),
+              })}
               aria-invalid={!!errors.name}
             />
             {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
@@ -84,6 +89,8 @@ const RegisterPage = () => {
               {...register("email", {
                 required: "Email is required",
                 pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Enter a valid email" },
+                maxLength: { value: 254, message: "Email is too long" },
+                setValueAs: (v) => v.trim().toLowerCase(),
               })}
               aria-invalid={!!errors.email}
             />
@@ -98,10 +105,14 @@ const RegisterPage = () => {
             <Input
               id="companyCode"
               type="text"
-              placeholder="Enter your team's code, or leave blank to create a new one"
+              placeholder="Your team's code or leave blank to create new"
               autoComplete="off"
-              {...register("companyCode")}
+              {...register("companyCode", {
+                maxLength: { value: 20, message: "Company code is too long. maximum 20 characters allowed." },
+                setValueAs: (v) => v?.trim(),
+              })}
             />
+            {errors.companyCode && <p className="text-xs text-red-500">{errors.companyCode.message}</p>}
           </div>
 
           {/* password field */}
@@ -114,7 +125,19 @@ const RegisterPage = () => {
                 placeholder="••••••••"
                 autoComplete="new-password"
                 className="pr-10"
-                {...register("password", { required: "Password is required", minLength: { value: 6, message: "Minimum 6 characters" } })}
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: { value: 8, message: "Minimum 8 characters" },
+                  maxLength: { value: 128, message: "Password is too long" },
+                  validate: (v) => {
+                    if (/\s/.test(v)) return "Password cannot contain spaces";
+                    if (!/[A-Z]/.test(v)) return "Must contain at least one uppercase letter";
+                    if (!/[a-z]/.test(v)) return "Must contain at least one lowercase letter";
+                    if (!/[0-9]/.test(v)) return "Must contain at least one number";
+                    if (!/[^A-Za-z0-9]/.test(v)) return "Must contain at least one special character";
+                    return true;
+                  },
+                })}
                 aria-invalid={!!errors.password}
               />
               <button
@@ -138,7 +161,10 @@ const RegisterPage = () => {
               autoComplete="new-password"
               {...register("confirmPassword", {
                 required: "Please confirm your password",
-                validate: (v) => v === watch("password") || "Passwords do not match",
+                validate: (v) => {
+                  if (/\s/.test(v)) return "Password cannot contain spaces";
+                  return v === watch("password") || "Passwords do not match";
+                },
               })}
               aria-invalid={!!errors.confirmPassword}
             />
@@ -146,7 +172,7 @@ const RegisterPage = () => {
           </div>
 
           {/* register btn */}
-          <Button type="submit" className="w-full bg-primary hover:bg-primary-700 text-white" disabled={isSubmitting}>
+          <Button type="submit" className="w-full bg-primary hover:bg-primary-700 text-white" disabled={isSubmitting || !isValid}>
             {isSubmitting && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
             Create account
           </Button>

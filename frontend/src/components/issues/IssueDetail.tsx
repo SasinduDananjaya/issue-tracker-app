@@ -35,11 +35,11 @@ interface AuditEntryProps {
 
 const AuditEntry = ({ log, issue }: AuditEntryProps) => {
   const resolveValue = (val: string | null | undefined) => {
-    if (!val) return "—";
+    if (!val) return "-";
     if (!UUID_RE.test(val)) return val;
     if (val === issue.assignee?.uuid) return issue.assignee.email;
     if (val === issue.createdBy.uuid) return issue.createdBy.email;
-    return "—";
+    return "-";
   };
 
   return (
@@ -160,7 +160,7 @@ const IssueDetail = ({ issue, open, onOpenChange, onEdit }: IssueDetailProps) =>
               <span className="text-sm text-gray-700">{format(new Date(issue.updatedAt), "MMM d, yyyy")}</span>
             </Prop>
             <Prop label="Due date" className="col-span-2">
-              <span className="text-sm text-gray-700">{issue.dueDate ? format(new Date(issue.dueDate), "MMM d, yyyy") : "—"}</span>
+              <span className="text-sm text-gray-700">{issue.dueDate ? format(new Date(issue.dueDate), "MMM d, yyyy") : "-"}</span>
             </Prop>
 
             {issue.resolvedAt && (

@@ -57,8 +57,9 @@ const IssueForm = ({ open, onOpenChange, editIssue }: IssueFormProps) => {
     control,
     reset,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid, isDirty },
   } = useForm<IssueFormValues>({
+    mode: "onChange",
     defaultValues: {
       title: "",
       description: "",
@@ -235,7 +236,7 @@ const IssueForm = ({ open, onOpenChange, editIssue }: IssueFormProps) => {
               </div>
             </div>
 
-            {/* Assignee — org owner only */}
+            {/* Assignee - org owner only */}
             {isOrgOwner && (
               <div className="space-y-1.5">
                 <Label className="flex items-center gap-1.5">
@@ -324,7 +325,7 @@ const IssueForm = ({ open, onOpenChange, editIssue }: IssueFormProps) => {
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button type="submit" className="bg-primary hover:bg-primary-700 text-white" disabled={isSubmitting}>
+            <Button type="submit" className="bg-primary hover:bg-primary-700 text-white" disabled={isSubmitting || !isValid || (isEdit && !isDirty)}>
               {isSubmitting && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
               {isEdit ? "Save changes" : "Create issue"}
             </Button>

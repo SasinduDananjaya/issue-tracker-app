@@ -13,7 +13,7 @@ export const register = async (name: string, email: string, password: string, co
   return data;
 };
 
-// No token arg — the httpOnly cookie is sent automatically by the browser
+// No token arg - the httpOnly cookie is sent automatically by the browser
 export const logout = async (): Promise<void> => {
   await apiClient.post("/auth/logout");
 };

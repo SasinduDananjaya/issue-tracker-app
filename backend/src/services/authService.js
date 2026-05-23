@@ -58,7 +58,7 @@ const authService = {
     let isOrgOwner = false;
     if (companyCode) {
       const orgMember = await prisma.user.findFirst({ where: { organizationCode: companyCode } });
-      if (!orgMember) throw new AppError("Invalid code", 404);
+      if (!orgMember) throw new AppError("Invalid company code", 404);
       organizationCode = companyCode;
     } else {
       organizationCode = crypto.randomUUID().replace(/-/g, "").slice(0, 8).toUpperCase();

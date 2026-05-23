@@ -93,7 +93,7 @@ const IssueList = ({ filters, onEdit, onView }: IssueListProps) => {
                         {format(new Date(issue.dueDate), "MMM d, yyyy")}
                       </>
                     ) : (
-                      <span className="text-gray-400">—</span>
+                      <span className="text-gray-400">-</span>
                     )}
                   </div>
                   <span className="text-xs text-gray-400">{format(new Date(issue.createdAt), "MMM d, yyyy")}</span>
@@ -124,15 +124,7 @@ const IssueList = ({ filters, onEdit, onView }: IssueListProps) => {
       </div>
 
       <div className="pb-4">
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          total={data?.total}
-          pageSize={20}
-          itemLabel="issues"
-          isLoading={isFetching}
-          onChange={setPage}
-        />
+        <Pagination page={page} totalPages={totalPages} total={data?.total} pageSize={20} itemLabel="issues" isLoading={isFetching} onChange={setPage} />
       </div>
     </div>
   );
