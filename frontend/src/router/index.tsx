@@ -5,6 +5,7 @@ import RegisterPage from "@/pages/RegisterPage";
 import IssuesPage from "@/pages/IssuesPage";
 import AppLayout from "@/layout/AppLayout";
 
+//protected routes for authenticated users and public routes for unauthenticated users
 const ProtectedRoute = () => {
   const user = useAuthStore((s) => s.user);
   if (!user) return <Navigate to="/login" replace />;

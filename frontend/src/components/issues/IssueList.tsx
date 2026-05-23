@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { format, isPast } from "date-fns";
 import { Loader2, ChevronLeft, ChevronRight, InboxIcon, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -68,11 +69,14 @@ const IssueList = ({ filters, onEdit, onView }: IssueListProps) => {
               <p className="text-sm">No issues found</p>
             </div>
           ) : (
-            issues.map((issue) => {
+            issues.map((issue, i) => {
               const isOverdue = issue.dueDate && issue.status !== "RESOLVED" && issue.status !== "CLOSED" && isPast(new Date(issue.dueDate));
               return (
-                <div
+                <motion.div
                   key={issue.uuid}
+                  initial={{ opacity: 0, x: -6 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.03, duration: 0.2 }}
                   className="grid grid-cols-[2fr_100px_90px_90px_140px_110px_110px_44px] gap-3 px-4 py-3.5 hover:bg-gray-50 cursor-pointer items-center transition-colors"
                   onClick={() => onView(issue)}
                 >
@@ -104,7 +108,7 @@ const IssueList = ({ filters, onEdit, onView }: IssueListProps) => {
                   <div onClick={(e) => e.stopPropagation()}>
                     <IssueActionsMenu issue={issue} onEdit={onEdit} />
                   </div>
-                </div>
+                </motion.div>
               );
             })
           )}
@@ -140,7 +144,7 @@ const IssueList = ({ filters, onEdit, onView }: IssueListProps) => {
                 key={n}
                 variant={n === page ? "default" : "outline"}
                 size="icon-sm"
-                className={n === page ? "bg-purple-600 hover:bg-purple-700 text-white" : ""}
+                className={n === page ? "bg-primary hover:bg-primary-700 text-white" : ""}
                 onClick={() => setPage(n)}
                 disabled={isFetching}
               >

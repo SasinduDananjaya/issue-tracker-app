@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useFilterStore } from "@/store/filterStore";
 import StatusCountCards from "@/components/issues/StatusCountCards";
 import IssueFilters from "@/components/issues/IssueFilters";
@@ -40,11 +41,17 @@ const IssuesPage = () => {
 
       {/* kanban board / list */}
       <div className="flex-1 min-h-0 overflow-hidden">
-        {viewMode === "kanban" ? (
-          <KanbanBoard filters={filters} onEdit={handleEdit} onView={handleView} />
-        ) : (
-          <IssueList filters={filters} onEdit={handleEdit} onView={handleView} />
-        )}
+        <AnimatePresence mode="wait">
+          {viewMode === "kanban" ? (
+            <motion.div key="kanban" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="h-full">
+              <KanbanBoard filters={filters} onEdit={handleEdit} onView={handleView} />
+            </motion.div>
+          ) : (
+            <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="h-full">
+              <IssueList filters={filters} onEdit={handleEdit} onView={handleView} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* create / edit sheet */}

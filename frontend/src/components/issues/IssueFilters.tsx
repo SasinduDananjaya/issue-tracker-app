@@ -19,7 +19,7 @@ const IssueFilters = ({ onNewIssue }: IssueFiltersProps) => {
           size="sm"
           onClick={() => setViewMode("kanban")}
           className={`gap-1.5 h-7 px-3 text-xs font-medium ${
-            viewMode === "kanban" ? "bg-white text-purple-700 shadow-sm" : "text-gray-500 hover:text-gray-700"
+            viewMode === "kanban" ? "bg-white text-primary-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
           }`}
         >
           <LayoutGrid className="w-3.5 h-3.5" />
@@ -29,7 +29,7 @@ const IssueFilters = ({ onNewIssue }: IssueFiltersProps) => {
           variant="ghost"
           size="sm"
           onClick={() => setViewMode("list")}
-          className={`gap-1.5 h-7 px-3 text-xs font-medium ${viewMode === "list" ? "bg-white text-purple-700 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+          className={`gap-1.5 h-7 px-3 text-xs font-medium ${viewMode === "list" ? "bg-white text-primary-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
         >
           <List className="w-3.5 h-3.5" />
           List
@@ -39,7 +39,7 @@ const IssueFilters = ({ onNewIssue }: IssueFiltersProps) => {
       {/* new issue btn */}
       <div className="flex items-center gap-2">
         <FilterPanel />
-        <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white gap-1.5" onClick={onNewIssue}>
+        <Button size="sm" className="bg-primary hover:bg-primary-700 text-white gap-1.5" onClick={onNewIssue}>
           <Plus className="w-4 h-4" />
           New Issue
         </Button>

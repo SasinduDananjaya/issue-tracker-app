@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { CalendarIcon, Loader2 } from "lucide-react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -42,6 +42,7 @@ const IssueForm = ({ open, onOpenChange, editIssue }: IssueFormProps) => {
     handleSubmit,
     control,
     reset,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<IssueFormValues>({
     defaultValues: {
@@ -53,6 +54,9 @@ const IssueForm = ({ open, onOpenChange, editIssue }: IssueFormProps) => {
       dueDate: undefined,
     },
   });
+
+  const titleLen = watch("title")?.length ?? 0;
+  const descLen = watch("description")?.length ?? 0;
 
   useEffect(() => {
     if (open) {
@@ -97,45 +101,63 @@ const IssueForm = ({ open, onOpenChange, editIssue }: IssueFormProps) => {
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-120 flex flex-col gap-0 p-0">
-        <SheetHeader className="px-6 py-4 border-b">
-          <SheetTitle>{isEdit ? "Edit Issue" : "New Issue"}</SheetTitle>
-        </SheetHeader>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-lg p-0 gap-0 flex flex-col max-h-[90vh] overflow-hidden" showCloseButton={false}>
+        <DialogHeader className="px-6 py-4 border-b shrink-0">
+          <DialogTitle>{isEdit ? "Edit Issue" : "New Issue"}</DialogTitle>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col flex-1 overflow-y-auto">
-          <div className="flex-1 px-6 py-5 space-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col flex-1 min-h-0 overflow-hidden">
+          <div className="overflow-y-auto flex-1 px-6 py-5 space-y-5">
             {/* Title */}
             <div className="space-y-1.5">
               <Label htmlFor="title">
                 Title <span className="text-red-500">*</span>
               </Label>
-              <Input
-                id="title"
-                placeholder="Short, descriptive title"
-                {...register("title", {
-                  required: "Title is required",
-                  maxLength: { value: 50, message: "Max 50 characters" },
-                })}
-                aria-invalid={!!errors.title}
-              />
+              <div className="relative">
+                <Input
+                  id="title"
+                  placeholder="Short, descriptive title"
+                  className="pr-14"
+                  maxLength={50}
+                  {...register("title", {
+                    required: "Title is required",
+                    maxLength: { value: 50, message: "Max 50 characters" },
+                  })}
+                  aria-invalid={!!errors.title}
+                />
+                <span
+                  className={`pointer-events-none absolute right-2.5 bottom-0.5 text-[10px] tabular-nums ${titleLen > 45 ? "text-red-500" : titleLen > 38 ? "text-amber-500" : "text-muted-foreground"}`}
+                >
+                  {titleLen}/50
+                </span>
+              </div>
               {errors.title && <p className="text-xs text-red-500">{errors.title.message}</p>}
             </div>
 
             {/* Description */}
             <div className="space-y-1.5">
               <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                placeholder="Describe the issue in detail…"
-                rows={3}
-                {...register("description", { maxLength: { value: 255, message: "Max 255 characters" } })}
-                aria-invalid={!!errors.description}
-              />
+              <div className="relative">
+                <Textarea
+                  id="description"
+                  placeholder="Describe the issue in detail…"
+                  rows={3}
+                  className="pb-6"
+                  maxLength={255}
+                  {...register("description", { maxLength: { value: 255, message: "Max 255 characters" } })}
+                  aria-invalid={!!errors.description}
+                />
+                <span
+                  className={`pointer-events-none absolute right-2.5 bottom-0.5 text-[10px] tabular-nums ${descLen > 230 ? "text-red-500" : descLen > 200 ? "text-amber-500" : "text-muted-foreground"}`}
+                >
+                  {descLen}/255
+                </span>
+              </div>
               {errors.description && <p className="text-xs text-red-500">{errors.description.message}</p>}
             </div>
 
-            {/* Status + Priority */}
+            {/* Status and priority */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label>Status</Label>
@@ -236,18 +258,18 @@ const IssueForm = ({ open, onOpenChange, editIssue }: IssueFormProps) => {
             </div>
           </div>
 
-          <SheetFooter className="px-6 py-4 border-t gap-2">
+          <div className="shrink-0 flex justify-end gap-2 px-6 py-4 border-t">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white" disabled={isSubmitting}>
+            <Button type="submit" className="bg-primary hover:bg-primary-700 text-white" disabled={isSubmitting}>
               {isSubmitting && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
               {isEdit ? "Save changes" : "Create issue"}
             </Button>
-          </SheetFooter>
+          </div>
         </form>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 };
 
