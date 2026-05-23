@@ -18,6 +18,15 @@ const userRepository = {
       data: { deletedAt: new Date() },
     });
   },
+
+  //find all users in the same organization for dropdowns and filters
+  async findOrgMembers(organizationCode) {
+    return prisma.user.findMany({
+      where: { organizationCode, deletedAt: null },
+      select: { uuid: true, name: true, email: true },
+      orderBy: { name: "asc" },
+    });
+  },
 };
 
 export default userRepository;

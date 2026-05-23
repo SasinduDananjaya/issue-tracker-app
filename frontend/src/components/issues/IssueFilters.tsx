@@ -18,8 +18,8 @@ const IssueFilters = ({ onNewIssue }: IssueFiltersProps) => {
           variant="ghost"
           size="sm"
           onClick={() => setViewMode("kanban")}
-          className={`gap-1.5 h-7 px-3 text-xs font-medium ${
-            viewMode === "kanban" ? "bg-white text-primary-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+          className={`gap-1.5 h-8 w-40  px-3 text-xs font-medium ${
+            viewMode === "kanban" ? "bg-primary-50 text-primary-900 shadow-sm hover:bg-primary-100" : "text-gray-500 hover:text-gray-700"
           }`}
         >
           <LayoutGrid className="w-3.5 h-3.5" />
@@ -29,7 +29,7 @@ const IssueFilters = ({ onNewIssue }: IssueFiltersProps) => {
           variant="ghost"
           size="sm"
           onClick={() => setViewMode("list")}
-          className={`gap-1.5 h-7 px-3 text-xs font-medium ${viewMode === "list" ? "bg-white text-primary-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+          className={`gap-1.5 h-8 w-40 px-3 text-xs font-medium ${viewMode === "list" ? "bg-primary-50 text-primary-900 shadow-sm hover:bg-primary-100" : "text-gray-500 hover:text-gray-700"}`}
         >
           <List className="w-3.5 h-3.5" />
           List

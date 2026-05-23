@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { CalendarIcon, Loader2 } from "lucide-react";
+import { CalendarIcon, Loader2, UserIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,9 +13,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { createIssue, updateIssue } from "@/api/issueApi";
+import { getOrgMembers } from "@/api/userApi";
+import { useAuthStore } from "@/store/authStore";
 import { ALL_STATUSES, ALL_PRIORITIES, ALL_SEVERITIES, STATUS_LABELS, PRIORITY_LABELS, SEVERITY_LABELS } from "@/lib/constants";
 import type { CreateIssuePayload } from "@/types";
 import type { Issue } from "@/types/issueTypes";
+
+const UNASSIGNED = "__none__";
 
 interface IssueFormValues {
   title: string;
@@ -24,6 +28,7 @@ interface IssueFormValues {
   priority: string;
   severity: string;
   dueDate?: Date;
+  assigneeUuid?: string;
 }
 
 interface IssueFormProps {
@@ -36,6 +41,15 @@ interface IssueFormProps {
 const IssueForm = ({ open, onOpenChange, editIssue }: IssueFormProps) => {
   const queryClient = useQueryClient();
   const isEdit = !!editIssue;
+  const currentUser = useAuthStore((s) => s.user);
+  const isOrgOwner = currentUser?.isOrgOwner ?? false;
+
+  const { data: orgMembers = [] } = useQuery({
+    queryKey: ["orgMembers"],
+    queryFn: getOrgMembers,
+    enabled: isOrgOwner,
+    staleTime: 5 * 60 * 1000,
+  });
 
   const {
     register,
@@ -52,6 +66,7 @@ const IssueForm = ({ open, onOpenChange, editIssue }: IssueFormProps) => {
       priority: "MEDIUM",
       severity: "MEDIUM",
       dueDate: undefined,
+      assigneeUuid: UNASSIGNED,
     },
   });
 
@@ -69,27 +84,35 @@ const IssueForm = ({ open, onOpenChange, editIssue }: IssueFormProps) => {
               priority: editIssue.priority,
               severity: editIssue.severity,
               dueDate: editIssue.dueDate ? new Date(editIssue.dueDate) : undefined,
+              assigneeUuid: editIssue.assignee?.uuid ?? UNASSIGNED,
             }
-          : { title: "", description: "", status: "OPEN", priority: "MEDIUM", severity: "MEDIUM", dueDate: undefined },
+          : { title: "", description: "", status: "OPEN", priority: "MEDIUM", severity: "MEDIUM", dueDate: undefined, assigneeUuid: UNASSIGNED },
       );
     }
   }, [open, editIssue, reset]);
 
   const onSubmit = async (values: IssueFormValues) => {
-    const payload: CreateIssuePayload = {
+    const assigneeValue = isOrgOwner ? values.assigneeUuid : undefined;
+
+    const createPayload: CreateIssuePayload = {
       title: values.title.trim(),
       description: values.description.trim() || undefined,
       status: values.status as CreateIssuePayload["status"],
       priority: values.priority as CreateIssuePayload["priority"],
       severity: values.severity as CreateIssuePayload["severity"],
       dueDate: values.dueDate ? values.dueDate.toISOString() : undefined,
+      ...(assigneeValue && assigneeValue !== UNASSIGNED && { assigneeUuid: assigneeValue }),
     };
+
     try {
       if (isEdit && editIssue) {
-        await updateIssue(editIssue.uuid, payload);
+        await updateIssue(editIssue.uuid, {
+          ...createPayload,
+          assigneeUuid: assigneeValue === UNASSIGNED ? null : (assigneeValue ?? undefined),
+        });
         toast.success("Issue updated");
       } else {
-        await createIssue(payload);
+        await createIssue(createPayload);
         toast.success("Issue created");
       }
       queryClient.invalidateQueries({ queryKey: ["issues"] });
@@ -203,6 +226,37 @@ const IssueForm = ({ open, onOpenChange, editIssue }: IssueFormProps) => {
                 />
               </div>
             </div>
+
+            {/* Assignee — org owner only */}
+            {isOrgOwner && (
+              <div className="space-y-1.5">
+                <Label className="flex items-center gap-1.5">
+                  <UserIcon className="w-3.5 h-3.5 text-gray-400" /> Assignee
+                </Label>
+                <Controller
+                  name="assigneeUuid"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Unassigned" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={UNASSIGNED}>Unassigned</SelectItem>
+                        {orgMembers.map((m) => (
+                          <SelectItem key={m.uuid} value={m.uuid} textValue={m.name}>
+                            <div className="flex flex-col overflow-hidden max-w-full">
+                              <span className="truncate font-medium">{m.name}</span>
+                              <span className="truncate text-xs text-gray-400">{m.email}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+            )}
 
             {/* Severity + Due Date */}
             <div className="grid grid-cols-2 gap-4">

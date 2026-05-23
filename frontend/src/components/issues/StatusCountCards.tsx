@@ -17,7 +17,7 @@ const CARD_STYLES: Record<IssueStatus, string> = {
   OPEN: "border-l-4 border-l-blue-500",
   IN_PROGRESS: "border-l-4 border-l-primary",
   RESOLVED: "border-l-4 border-l-success",
-  CLOSED: "border-l-4 border-l-gray-400",
+  CLOSED: "border-l-4 border-l-red-400",
 };
 
 const STATUSES: IssueStatus[] = ["OPEN", "IN_PROGRESS", "RESOLVED", "CLOSED"];

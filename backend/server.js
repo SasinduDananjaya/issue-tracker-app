@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import { connectDB } from "./src/config/dbConfig.js";
 import authRoutes from "./src/routes/authRoutes.js";
 import issueRoutes from "./src/routes/issueRoutes.js";
+import activityRoutes from "./src/routes/activityRoutes.js";
+import userRoutes from "./src/routes/userRoutes.js";
 import errorHandler from "./src/middleware/errorHandler.js";
 import requestLogger from "./src/middleware/requestLogger.js";
 
@@ -47,6 +49,8 @@ app.get("/", (req, res) => {
 //routes
 app.use("/api/auth", authRoutes);
 app.use("/api/issues", issueRoutes);
+app.use("/api/activity", activityRoutes);
+app.use("/api/users", userRoutes);
 
 //global error handler
 app.use(errorHandler);

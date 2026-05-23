@@ -22,12 +22,7 @@ const IssueCard = ({ issue, onEdit, onView, compact = false }: IssueCardProps) =
 
   return (
     // plain div owns dnd-kit listeners — keeps Framer Motion from intercepting pointer events
-    <div
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
-      className="touch-none cursor-grab active:cursor-grabbing"
-    >
+    <div ref={setNodeRef} {...attributes} {...listeners} className="touch-none cursor-grab active:cursor-grabbing">
       <motion.div
         initial={{ opacity: 0, scale: 0.97 }}
         animate={{ opacity: isDragging ? 0.3 : 1, scale: 1 }}
@@ -54,8 +49,12 @@ const IssueCard = ({ issue, onEdit, onView, compact = false }: IssueCardProps) =
 
           <div className="flex items-center justify-between mt-3">
             <div className="flex items-center gap-1.5">
-              {issue.assignee ? <UserAvatar user={issue.assignee} size="sm" /> : <div className="w-6 h-6 rounded-full border-2 border-dashed border-gray-200" />}
-              <span className="text-xs text-gray-400">{issue.createdBy.name}</span>
+              {issue.assignee ? (
+                <UserAvatar user={issue.assignee} size="sm" />
+              ) : (
+                <div className="w-6 h-6 rounded-full border-2 border-dashed border-gray-200" />
+              )}
+              <span className="text-xs text-gray-400">{issue.assignee?.name}</span>
             </div>
 
             {issue.dueDate && (

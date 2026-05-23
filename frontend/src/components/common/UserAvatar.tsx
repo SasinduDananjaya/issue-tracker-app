@@ -5,13 +5,14 @@ import type { User } from "@/types/userTypes";
 interface UserAvatarProps {
   user: User;
   className?: string;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl";
 }
 
 const SIZE_CLASSES = {
   sm: "w-6 h-6 text-xs",
   md: "w-8 h-8 text-sm",
   lg: "w-10 h-10 text-base",
+  xl: "w-16 h-16 text-xl",
 };
 
 const getInitials = (name: string) =>
