@@ -30,7 +30,7 @@ const IssueList = ({ filters, onEdit, onView }: IssueListProps) => {
   return (
     <div className="flex flex-col gap-4 h-full overflow-auto">
       {/* desktop table */}
-      <Card className="overflow-hidden border border-gray-200 bg-white hidden md:block">
+      <Card className="flex-col flex-1 min-h-0 overflow-hidden border border-gray-200 bg-white hidden md:flex">
         <div className="grid grid-cols-[2fr_100px_90px_90px_140px_110px_110px_44px] gap-3 px-4 py-3 bg-gray-50 border-b text-xs font-semibold text-gray-500 uppercase tracking-wider">
           <span>Title</span>
           <span>Status</span>
@@ -42,7 +42,7 @@ const IssueList = ({ filters, onEdit, onView }: IssueListProps) => {
           <span />
         </div>
 
-        <div className="divide-y divide-gray-100">
+        <div className="divide-y divide-gray-100 flex-1 overflow-y-auto min-h-0 scrollbar-thin">
           {isLoading ? (
             Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="px-4 py-3.5 animate-pulse flex gap-4 items-center">

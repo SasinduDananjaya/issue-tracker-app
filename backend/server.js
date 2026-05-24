@@ -10,6 +10,7 @@ import activityRoutes from "./src/routes/activityRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
 import errorHandler from "./src/middleware/errorHandler.js";
 import requestLogger from "./src/middleware/requestLogger.js";
+import { apiLimiter } from "./src/middleware/rateLimiter.js";
 
 const app = express();
 
@@ -48,9 +49,9 @@ app.get("/", (req, res) => {
 
 //routes
 app.use("/api/auth", authRoutes);
-app.use("/api/issues", issueRoutes);
-app.use("/api/activity", activityRoutes);
-app.use("/api/users", userRoutes);
+app.use("/api/issues", apiLimiter, issueRoutes);
+app.use("/api/activity", apiLimiter, activityRoutes);
+app.use("/api/users", apiLimiter, userRoutes);
 
 //global error handler
 app.use(errorHandler);
