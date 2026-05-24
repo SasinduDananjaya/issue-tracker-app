@@ -58,8 +58,10 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 
+//connect to db before starting server
+await connectDB();
+
 //start server
-app.listen(PORT, async () => {
-  await connectDB();
+app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
