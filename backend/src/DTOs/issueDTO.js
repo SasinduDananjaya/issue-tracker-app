@@ -9,6 +9,15 @@ const severityValues = Object.values(IssueSeverity);
 //ISO datetime string
 const dateField = z.iso.datetime({ local: true }).pipe(z.coerce.date());
 
+const futureDateField = dateField.refine(
+  (date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date >= today;
+  },
+  { message: "Due date cannot be in the past" }
+);
+
 //issue DTOs for validating incoming data from issue controller
 export const CreateIssueDTO = z.object({
   title: z.string().min(1, "Title is required").max(50, "Title must be at most 50 characters"),
@@ -16,7 +25,7 @@ export const CreateIssueDTO = z.object({
   status: z.enum(statusValues).optional(),
   priority: z.enum(priorityValues).optional(),
   severity: z.enum(severityValues).optional(),
-  dueDate: dateField.optional(),
+  dueDate: futureDateField.optional(),
   assigneeUuid: z.string().uuid("Invalid assignee").optional(),
 });
 
@@ -27,7 +36,7 @@ export const UpdateIssueDTO = z
     status: z.enum(statusValues).optional(),
     priority: z.enum(priorityValues).optional(),
     severity: z.enum(severityValues).optional(),
-    dueDate: dateField.nullish(),
+    dueDate: futureDateField.nullish(),
     assigneeUuid: z.string().uuid("Invalid assignee").nullish(),
   })
   .refine((obj) => Object.keys(obj).length > 0, {
